@@ -201,6 +201,9 @@
     </Compile>
     <Compile Include="Models\IdentityModels.cs" />
     <Compile Include="Models\ManageViewModels.cs" />
+    <Compile Include="Models\VWCustomerInformation.cs">
+      <DependentUpon>CrmModel.tt</DependentUpon>
+    </Compile>
     <Compile Include="Models\客戶聯絡人.cs">
       <DependentUpon>CrmModel.tt</DependentUpon>
     </Compile>

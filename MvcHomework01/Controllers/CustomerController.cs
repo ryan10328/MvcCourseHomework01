@@ -17,7 +17,32 @@ namespace MvcHomework01.Controllers
         // GET: Customer
         public ActionResult Index()
         {
-            return View(db.客戶資料.ToList());
+            var 客戶資料 = db.客戶資料.Where(x => x.是否刪除 == false);
+            CustomerViewModel model = new CustomerViewModel()
+            {
+                CustomerSearchParam = null,
+                客戶資料s = 客戶資料.ToList()
+            };
+            return View(model);
+        }
+
+        [HttpPost]
+        [ValidateAntiForgeryToken]
+        public ActionResult Index(CustomerViewModel model)
+        {
+            var 客戶資料 = db.客戶資料.Where(x => x.是否刪除 == false);
+
+            if (!string.IsNullOrEmpty(model.CustomerSearchParam.CustomerName))
+            {
+                客戶資料 = 客戶資料.Where(x => x.客戶名稱.Contains(model.CustomerSearchParam.CustomerName));
+            }
+            if (!string.IsNullOrEmpty(model.CustomerSearchParam.Address))
+            {
+                客戶資料 = 客戶資料.Where(x => x.地址.Contains(model.CustomerSearchParam.Address));
+            }
+
+            model.客戶資料s = 客戶資料;
+            return View(model);
         }
 
         // GET: Customer/Details/5
@@ -46,10 +71,11 @@ namespace MvcHomework01.Controllers
         // 詳細資訊，請參閱 http://go.microsoft.com/fwlink/?LinkId=317598。
         [HttpPost]
         [ValidateAntiForgeryToken]
-        public ActionResult Create([Bind(Include = "Id,客戶名稱,統一編號,電話,傳真,地址,Email,是否刪除")] 客戶資料 客戶資料)
+        public ActionResult Create([Bind(Include = "Id,客戶名稱,統一編號,電話,傳真,地址,Email")] 客戶資料 客戶資料)
         {
             if (ModelState.IsValid)
             {
+                客戶資料.是否刪除 = false;
                 db.客戶資料.Add(客戶資料);
                 db.SaveChanges();
                 return RedirectToAction("Index");
@@ -110,7 +136,7 @@ namespace MvcHomework01.Controllers
         public ActionResult DeleteConfirmed(int id)
         {
             客戶資料 客戶資料 = db.客戶資料.Find(id);
-            db.客戶資料.Remove(客戶資料);
+            客戶資料.是否刪除 = true;
             db.SaveChanges();
             return RedirectToAction("Index");
         }

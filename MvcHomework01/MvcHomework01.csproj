@@ -179,6 +179,8 @@
       <DependentUpon>Global.asax</DependentUpon>
     </Compile>
     <Compile Include="Models\AccountViewModels.cs" />
+    <Compile Include="Models\SearchParameter\ContactViewModelSearch.cs" />
+    <Compile Include="Models\ViewModel\BankViewModel.cs" />
     <Compile Include="Models\CrmModel.Context.cs">
       <AutoGen>True</AutoGen>
       <DesignTime>True</DesignTime>
@@ -200,7 +202,12 @@
       <DependentUpon>EFGeneratePartialClass.tt</DependentUpon>
     </Compile>
     <Compile Include="Models\IdentityModels.cs" />
-    <Compile Include="Models\ManageViewModels.cs" />
+    <Compile Include="Models\SearchParameter\BankViewModelSearch.cs" />
+    <Compile Include="Models\ViewModel\ContactViewModel.cs" />
+    <Compile Include="Models\SearchParameter\CustomerSearchParam.cs" />
+    <Compile Include="Models\ViewModel\CustomerViewModel.cs" />
+    <Compile Include="Models\ViewModel\ManageViewModels.cs" />
+    <Compile Include="Attributes\MobilePhoneAttribute.cs" />
     <Compile Include="Models\VWCustomerInformation.cs">
       <DependentUpon>CrmModel.tt</DependentUpon>
     </Compile>

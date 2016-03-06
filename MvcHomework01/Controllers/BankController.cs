@@ -17,8 +17,35 @@ namespace MvcHomework01.Controllers
         // GET: Bank
         public ActionResult Index()
         {
-            var 客戶銀行資訊 = db.客戶銀行資訊.Include(客 => 客.客戶資料);
-            return View(客戶銀行資訊.ToList());
+            var 客戶銀行資訊 = db.客戶銀行資訊.Include(客 => 客.客戶資料).Where(x => x.是否刪除 == false);
+
+            BankViewModel model = new BankViewModel()
+            {
+                BankViewModelSearch = null,
+                客戶銀行資訊s = 客戶銀行資訊.ToList()
+            };
+
+            return View(model);
+        }
+
+        [HttpPost]
+        [ValidateAntiForgeryToken]
+        public ActionResult Index(BankViewModel model)
+        {
+            if (!ModelState.IsValid)
+            {
+                return View(model);
+            }
+            var 客戶銀行資訊 = db.客戶銀行資訊.Include(客 => 客.客戶資料).Where(x => x.是否刪除 == false);
+
+            if (!string.IsNullOrEmpty(model.BankViewModelSearch.BankName))
+            {
+                客戶銀行資訊 = 客戶銀行資訊.Where(x => x.銀行名稱.Contains(model.BankViewModelSearch.BankName));
+            }
+
+            model.客戶銀行資訊s = 客戶銀行資訊;
+
+            return View(model);
         }
 
         // GET: Bank/Details/5
@@ -48,10 +75,11 @@ namespace MvcHomework01.Controllers
         // 詳細資訊，請參閱 http://go.microsoft.com/fwlink/?LinkId=317598。
         [HttpPost]
         [ValidateAntiForgeryToken]
-        public ActionResult Create([Bind(Include = "Id,客戶Id,銀行名稱,銀行代碼,分行代碼,帳戶名稱,帳戶號碼,是否刪除")] 客戶銀行資訊 客戶銀行資訊)
+        public ActionResult Create([Bind(Include = "Id,客戶Id,銀行名稱,銀行代碼,分行代碼,帳戶名稱,帳戶號碼")] 客戶銀行資訊 客戶銀行資訊)
         {
             if (ModelState.IsValid)
             {
+                客戶銀行資訊.是否刪除 = false;
                 db.客戶銀行資訊.Add(客戶銀行資訊);
                 db.SaveChanges();
                 return RedirectToAction("Index");
@@ -115,7 +143,7 @@ namespace MvcHomework01.Controllers
         public ActionResult DeleteConfirmed(int id)
         {
             客戶銀行資訊 客戶銀行資訊 = db.客戶銀行資訊.Find(id);
-            db.客戶銀行資訊.Remove(客戶銀行資訊);
+            客戶銀行資訊.是否刪除 = true;
             db.SaveChanges();
             return RedirectToAction("Index");
         }

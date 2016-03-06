@@ -24,10 +24,12 @@ namespace MvcHomework01.Models
         [Required]
         public string 姓名 { get; set; }
         
+        [EmailAddress]
         [StringLength(250, ErrorMessage="欄位長度不得大於 250 個字元")]
         [Required]
         public string Email { get; set; }
-        
+
+        [MobilePhone(ErrorMessage = "手機號碼之格式請使用09XX-XXXXXX")]
         [StringLength(50, ErrorMessage="欄位長度不得大於 50 個字元")]
         public string 手機 { get; set; }
         

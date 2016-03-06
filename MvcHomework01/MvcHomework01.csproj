@@ -175,6 +175,7 @@
     <Compile Include="Controllers\CustomerController.cs" />
     <Compile Include="Controllers\HomeController.cs" />
     <Compile Include="Controllers\ManageController.cs" />
+    <Compile Include="Controllers\VWController.cs" />
     <Compile Include="Global.asax.cs">
       <DependentUpon>Global.asax</DependentUpon>
     </Compile>
@@ -211,6 +212,7 @@
     <Compile Include="Models\VWCustomerInformation.cs">
       <DependentUpon>CrmModel.tt</DependentUpon>
     </Compile>
+    <Compile Include="Models\VWCustomerInformation.Partial.cs" />
     <Compile Include="Models\客戶聯絡人.cs">
       <DependentUpon>CrmModel.tt</DependentUpon>
     </Compile>
@@ -323,6 +325,7 @@
     <Content Include="Views\Bank\Details.cshtml" />
     <Content Include="Views\Bank\Edit.cshtml" />
     <Content Include="Views\Bank\Index.cshtml" />
+    <Content Include="Views\VW\Index.cshtml" />
   </ItemGroup>
   <ItemGroup>
     <Folder Include="App_Data\" />

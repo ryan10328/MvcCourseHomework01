@@ -1,0 +1,36 @@
+﻿@model IEnumerable<MvcHomework01.Models.VWCustomerInformation>
+
+@{
+    ViewBag.Title = "Index";
+}
+
+<h2>資料庫檢視</h2>
+
+<table class="table">
+    <tr>
+        <th>
+            @Html.DisplayNameFor(model => model.CustomerName)
+        </th>
+        <th>
+            @Html.DisplayNameFor(model => model.BankCount)
+        </th>
+        <th>
+            @Html.DisplayNameFor(model => model.ContactCount)
+        </th>
+    </tr>
+
+@foreach (var item in Model) {
+    <tr>
+        <td>
+            @Html.DisplayFor(modelItem => item.CustomerName)
+        </td>
+        <td>
+            @Html.DisplayFor(modelItem => item.BankCount)
+        </td>
+        <td>
+            @Html.DisplayFor(modelItem => item.ContactCount)
+        </td>
+    </tr>
+}
+
+</table>

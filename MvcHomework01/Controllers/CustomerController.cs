@@ -12,16 +12,18 @@ namespace MvcHomework01.Controllers
 {
     public class CustomerController : Controller
     {
-        private CrmEntities db = new CrmEntities();
+        客戶資料Repository repo = RepositoryHelper.Get客戶資料Repository();
 
         // GET: Customer
         public ActionResult Index()
         {
-            var 客戶資料 = db.客戶資料.Where(x => x.是否刪除 == false);
+            var 客戶資料 = repo.All().Where(x => x.是否刪除 == false);
+
             CustomerViewModel model = new CustomerViewModel()
             {
                 CustomerSearchParam = null,
-                客戶資料s = 客戶資料.ToList()
+                客戶資料s = 客戶資料.ToList(),
+                CountryList = new SelectList(repo.GetCountries(), "Id", "Name")
             };
             return View(model);
         }
@@ -30,18 +32,10 @@ namespace MvcHomework01.Controllers
         [ValidateAntiForgeryToken]
         public ActionResult Index(CustomerViewModel model)
         {
-            var 客戶資料 = db.客戶資料.Where(x => x.是否刪除 == false);
+            model.CountryList = new SelectList(repo.GetCountries(), "Id", "Name", model.CustomerSearchParam.CountryId);
 
-            if (!string.IsNullOrEmpty(model.CustomerSearchParam.CustomerName))
-            {
-                客戶資料 = 客戶資料.Where(x => x.客戶名稱.Contains(model.CustomerSearchParam.CustomerName));
-            }
-            if (!string.IsNullOrEmpty(model.CustomerSearchParam.Address))
-            {
-                客戶資料 = 客戶資料.Where(x => x.地址.Contains(model.CustomerSearchParam.Address));
-            }
+            model = repo.GetIndexData(model);
 
-            model.客戶資料s = 客戶資料;
             return View(model);
         }
 
@@ -52,7 +46,7 @@ namespace MvcHomework01.Controllers
             {
                 return new HttpStatusCodeResult(HttpStatusCode.BadRequest);
             }
-            客戶資料 客戶資料 = db.客戶資料.Find(id);
+            客戶資料 客戶資料 = repo.Get(id.Value);
             if (客戶資料 == null)
             {
                 return HttpNotFound();
@@ -63,6 +57,7 @@ namespace MvcHomework01.Controllers
         // GET: Customer/Create
         public ActionResult Create()
         {
+            ViewBag.Countries = new SelectList(repo.GetCountries(), "Id", "Name");
             return View();
         }
 
@@ -71,16 +66,16 @@ namespace MvcHomework01.Controllers
         // 詳細資訊，請參閱 http://go.microsoft.com/fwlink/?LinkId=317598。
         [HttpPost]
         [ValidateAntiForgeryToken]
-        public ActionResult Create([Bind(Include = "Id,客戶名稱,統一編號,電話,傳真,地址,Email")] 客戶資料 客戶資料)
+        public ActionResult Create([Bind(Include = "Id,客戶名稱,統一編號,電話,傳真,地址,Email,客戶國家Id")] 客戶資料 客戶資料)
         {
             if (ModelState.IsValid)
             {
+                var db = repo.UnitOfWork.Context as CrmEntities;
                 客戶資料.是否刪除 = false;
                 db.客戶資料.Add(客戶資料);
                 db.SaveChanges();
                 return RedirectToAction("Index");
             }
-
             return View(客戶資料);
         }
 
@@ -91,7 +86,7 @@ namespace MvcHomework01.Controllers
             {
                 return new HttpStatusCodeResult(HttpStatusCode.BadRequest);
             }
-            客戶資料 客戶資料 = db.客戶資料.Find(id);
+            客戶資料 客戶資料 = repo.Get(id.Value);
             if (客戶資料 == null)
             {
                 return HttpNotFound();
@@ -108,6 +103,7 @@ namespace MvcHomework01.Controllers
         {
             if (ModelState.IsValid)
             {
+                var db = repo.UnitOfWork.Context as CrmEntities;
                 db.Entry(客戶資料).State = EntityState.Modified;
                 db.SaveChanges();
                 return RedirectToAction("Index");
@@ -122,7 +118,7 @@ namespace MvcHomework01.Controllers
             {
                 return new HttpStatusCodeResult(HttpStatusCode.BadRequest);
             }
-            客戶資料 客戶資料 = db.客戶資料.Find(id);
+            客戶資料 客戶資料 = repo.Get(id.Value);
             if (客戶資料 == null)
             {
                 return HttpNotFound();
@@ -135,7 +131,9 @@ namespace MvcHomework01.Controllers
         [ValidateAntiForgeryToken]
         public ActionResult DeleteConfirmed(int id)
         {
-            客戶資料 客戶資料 = db.客戶資料.Find(id);
+            var db = repo.UnitOfWork.Context as CrmEntities;
+
+            客戶資料 客戶資料 = repo.Get(id);
             客戶資料.是否刪除 = true;
             db.SaveChanges();
             return RedirectToAction("Index");
@@ -145,6 +143,7 @@ namespace MvcHomework01.Controllers
         {
             if (disposing)
             {
+                var db = repo.UnitOfWork.Context as CrmEntities;
                 db.Dispose();
             }
             base.Dispose(disposing);

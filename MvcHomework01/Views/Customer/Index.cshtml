@@ -25,6 +25,12 @@
                     </div>
                 </div>
                 <div class="form-group">
+                    @Html.Label("國家", new { @class = "control-label col-md-2" })
+                    <div class="col-md-10">
+                        @Html.DropDownListFor(x => x.CustomerSearchParam.CountryId, (IEnumerable<SelectListItem>)Model.CountryList, "---請選擇---", new { @class = "form-control" })
+                    </div>
+                </div>
+                <div class="form-group">
                     <div class="col-md-2"></div>
                     <div class="col-md-10">
                         <input type="submit" value="送出" class="btn btn-primary" />

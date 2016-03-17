@@ -180,6 +180,7 @@
       <DependentUpon>Global.asax</DependentUpon>
     </Compile>
     <Compile Include="Models\AccountViewModels.cs" />
+    <Compile Include="Models\Country.cs" />
     <Compile Include="Models\EFRepository.cs">
       <DependentUpon>IRepository.EF6.tt</DependentUpon>
     </Compile>
@@ -201,6 +202,7 @@
       <DependentUpon>IRepository.EF6.tt</DependentUpon>
     </Compile>
     <Compile Include="Models\SearchParameter\ContactViewModelSearch.cs" />
+    <Compile Include="Models\Services\ContactService.cs" />
     <Compile Include="Models\ViewModel\BankViewModel.cs" />
     <Compile Include="Models\CrmModel.Context.cs">
       <AutoGen>True</AutoGen>

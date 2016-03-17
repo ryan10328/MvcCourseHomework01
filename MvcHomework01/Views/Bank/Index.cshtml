@@ -101,22 +101,18 @@
                     var result = confirm("您真的要刪除嗎?");
 
                     if (result) {
-                        $.ajax({
-                            url: url,
-                            method: "POST",
-                            data: { id: id },
-                            success: function (result) {
+                        $.ajax({ url: url, method: "POST", data: { id: id } })
+                            .done(function (result) {
                                 if (result.success) {
                                     alert(result.messages);
                                     location.reload();
                                 } else {
                                     alert(result.messages);
                                 }
-                            },
-                            error: function (result) {
+                            })
+                            .fail(function (result) {
                                 console.warn(result);
-                            }
-                        });
+                            });
                     }
                 });
             });

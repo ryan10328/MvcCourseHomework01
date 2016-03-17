@@ -26,5 +26,10 @@ namespace MvcHomework01.Controllers
 
             return View();
         }
+
+        public ActionResult Test()
+        {
+            return View();
+        }
     }
 }

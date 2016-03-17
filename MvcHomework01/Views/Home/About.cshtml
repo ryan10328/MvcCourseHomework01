@@ -1,6 +1,24 @@
 ﻿@{
     ViewBag.Title = "About";
 }
+
+@section Header{
+    <h1 class="page-header">
+        關於
+    </h1>
+}
+
+@section BreadCrumbs{
+    <ol class="breadcrumb">
+        <li class="active">
+            @Html.ActionLink("Home", "Index", "Home", null, null)
+        </li>
+        <li>
+            關於
+        </li>
+    </ol>
+}
+
 <h2>@ViewBag.Title.</h2>
 <h3>@ViewBag.Message</h3>
 

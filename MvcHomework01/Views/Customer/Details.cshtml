@@ -1,11 +1,21 @@
 ﻿@model MvcHomework01.Models.客戶資料
 
-@{
-    ViewBag.Title = "Details";
+@section Header{
+    <h1 class="page-header">
+        客戶資料管理
+    </h1>
 }
 
-<h2>Details</h2>
-
+@section BreadCrumbs{
+    <ol class="breadcrumb">
+        <li class="active">
+            @Html.ActionLink("Home", "Index", "Home", null, null)
+        </li>
+        <li>
+            客戶資料管理
+        </li>
+    </ol>
+}
 <div>
     <h4>客戶資料</h4>
     <hr />

@@ -70,10 +70,9 @@ namespace MvcHomework01.Controllers
         {
             if (ModelState.IsValid)
             {
-                var db = repo.UnitOfWork.Context as CrmEntities;
                 客戶資料.是否刪除 = false;
-                db.客戶資料.Add(客戶資料);
-                db.SaveChanges();
+                repo.Add(客戶資料);
+                repo.UnitOfWork.Commit();
                 return RedirectToAction("Index");
             }
             return View(客戶資料);
@@ -131,11 +130,9 @@ namespace MvcHomework01.Controllers
         [ValidateAntiForgeryToken]
         public ActionResult DeleteConfirmed(int id)
         {
-            var db = repo.UnitOfWork.Context as CrmEntities;
-
             客戶資料 客戶資料 = repo.Get(id);
             客戶資料.是否刪除 = true;
-            db.SaveChanges();
+            repo.UnitOfWork.Commit();
             return RedirectToAction("Index");
         }
 

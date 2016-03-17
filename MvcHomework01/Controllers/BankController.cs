@@ -12,12 +12,13 @@ namespace MvcHomework01.Controllers
 {
     public class BankController : Controller
     {
-        private CrmEntities db = new CrmEntities();
-
+        //private CrmEntities db = new CrmEntities();
+        客戶銀行資訊Repository repoBank = RepositoryHelper.Get客戶銀行資訊Repository();
+        客戶資料Repository repoCustomer = RepositoryHelper.Get客戶資料Repository();
         // GET: Bank
         public ActionResult Index()
         {
-            var 客戶銀行資訊 = db.客戶銀行資訊.Include(客 => 客.客戶資料).Where(x => x.是否刪除 == false);
+            var 客戶銀行資訊 = repoBank.All().Include(客 => 客.客戶資料).Where(x => x.是否刪除 == false);
 
             BankViewModel model = new BankViewModel()
             {
@@ -36,7 +37,7 @@ namespace MvcHomework01.Controllers
             {
                 return View(model);
             }
-            var 客戶銀行資訊 = db.客戶銀行資訊.Include(客 => 客.客戶資料).Where(x => x.是否刪除 == false);
+            var 客戶銀行資訊 = repoBank.All().Include(客 => 客.客戶資料).Where(x => x.是否刪除 == false);
 
             if (!string.IsNullOrEmpty(model.BankViewModelSearch.BankName))
             {
@@ -55,7 +56,7 @@ namespace MvcHomework01.Controllers
             {
                 return new HttpStatusCodeResult(HttpStatusCode.BadRequest);
             }
-            客戶銀行資訊 客戶銀行資訊 = db.客戶銀行資訊.Find(id);
+            客戶銀行資訊 客戶銀行資訊 = repoBank.Get(id.Value);
             if (客戶銀行資訊 == null)
             {
                 return HttpNotFound();
@@ -66,7 +67,7 @@ namespace MvcHomework01.Controllers
         // GET: Bank/Create
         public ActionResult Create()
         {
-            ViewBag.客戶Id = new SelectList(db.客戶資料, "Id", "客戶名稱");
+            ViewBag.客戶Id = new SelectList(repoCustomer.All(), "Id", "客戶名稱");
             return View();
         }
 
@@ -80,12 +81,12 @@ namespace MvcHomework01.Controllers
             if (ModelState.IsValid)
             {
                 客戶銀行資訊.是否刪除 = false;
-                db.客戶銀行資訊.Add(客戶銀行資訊);
-                db.SaveChanges();
+                repoBank.Add(客戶銀行資訊);
+                repoBank.UnitOfWork.Commit();
                 return RedirectToAction("Index");
             }
 
-            ViewBag.客戶Id = new SelectList(db.客戶資料, "Id", "客戶名稱", 客戶銀行資訊.客戶Id);
+            ViewBag.客戶Id = new SelectList(repoCustomer.All(), "Id", "客戶名稱", 客戶銀行資訊.客戶Id);
             return View(客戶銀行資訊);
         }
 
@@ -96,12 +97,12 @@ namespace MvcHomework01.Controllers
             {
                 return new HttpStatusCodeResult(HttpStatusCode.BadRequest);
             }
-            客戶銀行資訊 客戶銀行資訊 = db.客戶銀行資訊.Find(id);
+            客戶銀行資訊 客戶銀行資訊 = repoBank.Get(id.Value);
             if (客戶銀行資訊 == null)
             {
                 return HttpNotFound();
             }
-            ViewBag.客戶Id = new SelectList(db.客戶資料, "Id", "客戶名稱", 客戶銀行資訊.客戶Id);
+            ViewBag.客戶Id = new SelectList(repoCustomer.All(), "Id", "客戶名稱", 客戶銀行資訊.客戶Id);
             return View(客戶銀行資訊);
         }
 
@@ -114,11 +115,12 @@ namespace MvcHomework01.Controllers
         {
             if (ModelState.IsValid)
             {
+                var db = repoBank.UnitOfWork.Context as CrmEntities;
                 db.Entry(客戶銀行資訊).State = EntityState.Modified;
                 db.SaveChanges();
                 return RedirectToAction("Index");
             }
-            ViewBag.客戶Id = new SelectList(db.客戶資料, "Id", "客戶名稱", 客戶銀行資訊.客戶Id);
+            ViewBag.客戶Id = new SelectList(repoCustomer.All(), "Id", "客戶名稱", 客戶銀行資訊.客戶Id);
             return View(客戶銀行資訊);
         }
 
@@ -129,7 +131,7 @@ namespace MvcHomework01.Controllers
             {
                 return new HttpStatusCodeResult(HttpStatusCode.BadRequest);
             }
-            客戶銀行資訊 客戶銀行資訊 = db.客戶銀行資訊.Find(id);
+            客戶銀行資訊 客戶銀行資訊 = repoBank.Get(id.Value);
             if (客戶銀行資訊 == null)
             {
                 return HttpNotFound();
@@ -142,9 +144,9 @@ namespace MvcHomework01.Controllers
         [ValidateAntiForgeryToken]
         public ActionResult DeleteConfirmed(int id)
         {
-            客戶銀行資訊 客戶銀行資訊 = db.客戶銀行資訊.Find(id);
+            客戶銀行資訊 客戶銀行資訊 = repoBank.Get(id);
             客戶銀行資訊.是否刪除 = true;
-            db.SaveChanges();
+            repoBank.UnitOfWork.Commit();
             return RedirectToAction("Index");
         }
 
@@ -152,6 +154,7 @@ namespace MvcHomework01.Controllers
         {
             if (disposing)
             {
+                var db = repoBank.UnitOfWork.Context as CrmEntities;
                 db.Dispose();
             }
             base.Dispose(disposing);

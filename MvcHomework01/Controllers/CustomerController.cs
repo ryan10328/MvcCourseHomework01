@@ -132,6 +132,7 @@ namespace MvcHomework01.Controllers
         {
             客戶資料 客戶資料 = repo.Get(id);
             客戶資料.是否刪除 = true;
+
             repo.UnitOfWork.Commit();
             return RedirectToAction("Index");
         }

@@ -7,6 +7,7 @@ using System.Net;
 using System.Web;
 using System.Web.Mvc;
 using MvcHomework01.Models;
+using Microsoft.Web.Mvc;
 
 namespace MvcHomework01.Controllers
 {
@@ -141,13 +142,21 @@ namespace MvcHomework01.Controllers
 
         // POST: Bank/Delete/5
         [HttpPost, ActionName("Delete")]
-        [ValidateAntiForgeryToken]
+        //[ValidateAntiForgeryToken]
+        [AjaxOnly]
         public ActionResult DeleteConfirmed(int id)
         {
-            客戶銀行資訊 客戶銀行資訊 = repoBank.Get(id);
-            客戶銀行資訊.是否刪除 = true;
-            repoBank.UnitOfWork.Commit();
-            return RedirectToAction("Index");
+            try
+            {
+                客戶銀行資訊 客戶銀行資訊 = repoBank.Get(id);
+                客戶銀行資訊.是否刪除 = true;
+                repoBank.UnitOfWork.Commit();
+                return Json(new { success = true, messages = "刪除成功。" });
+            }
+            catch (Exception ex)
+            {
+                return Json(new { success = true, messages = ex.Message });
+            }
         }
 
         protected override void Dispose(bool disposing)

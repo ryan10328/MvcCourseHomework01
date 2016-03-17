@@ -82,9 +82,44 @@
             <td>
                 @Html.ActionLink("編輯", "Edit", new { id = item.Id }) |
                 @Html.ActionLink("詳細頁面", "Details", new { id = item.Id }) |
-                @Html.ActionLink("刪除", "Delete", new { id = item.Id })
+                @Html.ActionLink("刪除", "Delete", null, new { data_target = item.Id, @class = "Delete" })
             </td>
         </tr>
     }
 
 </table>
+
+@section Scripts{
+    <script type="text/javascript">
+        $(function () {
+            $(".Delete").each(function () {
+                $(this).on("click", function (e) {
+                    e.preventDefault();
+                    var url = $(this).attr("href");
+                    var id = $(this).data("target");
+
+                    var result = confirm("您真的要刪除嗎?");
+
+                    if (result) {
+                        $.ajax({
+                            url: url,
+                            method: "POST",
+                            data: { id: id },
+                            success: function (result) {
+                                if (result.success) {
+                                    alert(result.messages);
+                                    location.reload();
+                                } else {
+                                    alert(result.messages);
+                                }
+                            },
+                            error: function (result) {
+                                console.warn(result);
+                            }
+                        });
+                    }
+                });
+            });
+        });
+    </script>
+}

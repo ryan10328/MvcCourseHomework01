@@ -8,6 +8,9 @@ using System.Web;
 using System.Web.Mvc;
 using MvcHomework01.Models;
 using Microsoft.Web.Mvc;
+using NPOI.XSSF.UserModel;
+using NPOI.SS.UserModel;
+using System.IO;
 
 namespace MvcHomework01.Controllers
 {
@@ -157,6 +160,38 @@ namespace MvcHomework01.Controllers
             {
                 return Json(new { success = true, messages = ex.Message });
             }
+        }
+
+        public ActionResult ExportExcel()
+        {
+            XSSFWorkbook excel = new XSSFWorkbook();
+            ISheet sheet = excel.CreateSheet("Export");
+
+            var banklist = repoBank.All().Include(x => x.客戶資料).Where(x => x.是否刪除 == false).ToList();
+            IRow firstRow = sheet.CreateRow(0);
+            firstRow.CreateCell(0).SetCellValue("銀行名稱");
+            firstRow.CreateCell(1).SetCellValue("銀行代碼");
+            firstRow.CreateCell(2).SetCellValue("分行代碼");
+            firstRow.CreateCell(3).SetCellValue("帳戶名稱");
+            firstRow.CreateCell(4).SetCellValue("帳戶號碼");
+            firstRow.CreateCell(5).SetCellValue("客戶名稱");
+
+            for (int i = 0; i < banklist.Count(); i++)
+            {
+                IRow row = sheet.CreateRow(i + 1);
+                row.CreateCell(0).SetCellValue(banklist[i].銀行名稱);
+                row.CreateCell(1).SetCellValue(banklist[i].銀行代碼);
+                row.CreateCell(2).SetCellValue(banklist[i].分行代碼.Value);
+                row.CreateCell(3).SetCellValue(banklist[i].帳戶名稱);
+                row.CreateCell(4).SetCellValue(banklist[i].帳戶號碼);
+                row.CreateCell(5).SetCellValue(banklist[i].客戶資料.客戶名稱);
+            }
+
+            MemoryStream ms = new MemoryStream();
+            excel.Write(ms);
+            //ms.Seek(0, SeekOrigin.Begin);
+
+            return File(ms.ToArray(), "application/vnd.openxmlformats-officedocument.spreadsheetml.sheet", "客戶銀行資料.xlsx");
         }
 
         protected override void Dispose(bool disposing)

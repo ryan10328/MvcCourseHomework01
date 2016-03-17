@@ -7,6 +7,9 @@ using System.Net;
 using System.Web;
 using System.Web.Mvc;
 using MvcHomework01.Models;
+using NPOI.XSSF.UserModel;
+using NPOI.SS.UserModel;
+using System.IO;
 
 namespace MvcHomework01.Controllers
 {
@@ -155,6 +158,38 @@ namespace MvcHomework01.Controllers
             客戶聯絡人.是否刪除 = true;
             contactRepo.UnitOfWork.Commit();
             return RedirectToAction("Index");
+        }
+
+        public ActionResult ExportExcel()
+        {
+            XSSFWorkbook excel = new XSSFWorkbook();
+            ISheet sheet = excel.CreateSheet("Export");
+
+            var contactList = contactRepo.All().Include(x => x.客戶資料).Where(x => x.是否刪除 == false).ToList();
+            IRow firstRow = sheet.CreateRow(0);
+            firstRow.CreateCell(0).SetCellValue("職稱");
+            firstRow.CreateCell(1).SetCellValue("姓名");
+            firstRow.CreateCell(2).SetCellValue("Email");
+            firstRow.CreateCell(3).SetCellValue("手機");
+            firstRow.CreateCell(4).SetCellValue("電話");
+            firstRow.CreateCell(5).SetCellValue("客戶名稱");
+
+            for (int i = 0; i < contactList.Count(); i++)
+            {
+                IRow row = sheet.CreateRow(i + 1);
+                row.CreateCell(0).SetCellValue(contactList[i].職稱);
+                row.CreateCell(1).SetCellValue(contactList[i].姓名);
+                row.CreateCell(2).SetCellValue(contactList[i].Email);
+                row.CreateCell(3).SetCellValue(contactList[i].手機);
+                row.CreateCell(4).SetCellValue(contactList[i].電話);
+                row.CreateCell(5).SetCellValue(contactList[i].客戶資料.客戶名稱);
+            }
+
+            MemoryStream ms = new MemoryStream();
+            excel.Write(ms);
+            //ms.Seek(0, SeekOrigin.Begin);
+
+            return File(ms.ToArray(), "application/vnd.openxmlformats-officedocument.spreadsheetml.sheet", "客戶聯絡人資料.xlsx");
         }
 
         protected override void Dispose(bool disposing)

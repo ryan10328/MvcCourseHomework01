@@ -7,6 +7,9 @@ using System.Net;
 using System.Web;
 using System.Web.Mvc;
 using MvcHomework01.Models;
+using NPOI.XSSF.UserModel;
+using NPOI.SS.UserModel;
+using System.IO;
 
 namespace MvcHomework01.Controllers
 {
@@ -136,6 +139,40 @@ namespace MvcHomework01.Controllers
             repo.UnitOfWork.Commit();
             return RedirectToAction("Index");
         }
+
+        public ActionResult ExportExcel()
+        {
+            XSSFWorkbook excel = new XSSFWorkbook();
+            ISheet sheet = excel.CreateSheet("Export");
+
+            var customers = repo.All().Where(x => x.是否刪除 == false).ToList();
+            IRow firstRow = sheet.CreateRow(0);
+            firstRow.CreateCell(0).SetCellValue("客戶名稱");
+            firstRow.CreateCell(1).SetCellValue("統一編號");
+            firstRow.CreateCell(2).SetCellValue("電話");
+            firstRow.CreateCell(3).SetCellValue("傳真");
+            firstRow.CreateCell(4).SetCellValue("地址");
+            firstRow.CreateCell(5).SetCellValue("Email");
+
+            for (int i = 0; i < customers.Count(); i++)
+            {
+                IRow row = sheet.CreateRow(i + 1);
+                row.CreateCell(0).SetCellValue(customers[i].客戶名稱);
+                row.CreateCell(1).SetCellValue(customers[i].統一編號);
+                row.CreateCell(2).SetCellValue(customers[i].電話);
+                row.CreateCell(3).SetCellValue(customers[i].傳真);
+                row.CreateCell(4).SetCellValue(customers[i].地址);
+                row.CreateCell(5).SetCellValue(customers[i].Email);
+            }
+
+            MemoryStream ms = new MemoryStream();
+            excel.Write(ms);
+            
+            //ms.Seek(0, SeekOrigin.Begin);
+
+            return File(ms.ToArray(), "application/vnd.openxmlformats-officedocument.spreadsheetml.sheet", "客戶資料.xlsx");
+        }
+
 
         protected override void Dispose(bool disposing)
         {

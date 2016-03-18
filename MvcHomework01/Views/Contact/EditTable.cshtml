@@ -1,0 +1,66 @@
+﻿@using MvcHomework01.Models
+@model IEnumerable<客戶聯絡人>
+
+@{
+    ViewBag.Title = "Index";
+}
+
+@using (Html.BeginForm("EditTable", "Contact", new { id = ViewBag.id }, FormMethod.Post, null))
+{
+    <table class="table">
+        <tr>
+            <th>
+                @Html.DisplayNameFor(model => model.FirstOrDefault().職稱)
+            </th>
+            <th>
+                @Html.DisplayNameFor(model => model.FirstOrDefault().姓名)
+            </th>
+            <th>
+                @Html.DisplayNameFor(model => model.FirstOrDefault().Email)
+            </th>
+            <th>
+                @Html.DisplayNameFor(model => model.FirstOrDefault().手機)
+            </th>
+            <th>
+                @Html.DisplayNameFor(model => model.FirstOrDefault().電話)
+            </th>
+            <th>
+                @Html.DisplayNameFor(model => model.FirstOrDefault().客戶資料.客戶名稱)
+            </th>
+
+        </tr>
+        @{
+            var data = Model.ToArray();
+        }
+
+        @for (int i = 0; i < data.Length; i++)
+        {
+            @Html.HiddenFor(modelitem => data[i].Id)
+            <tr>
+                <td>
+                    @Html.EditorFor(modelItem => data[i].職稱)
+                </td>
+                <td>
+                    @Html.DisplayFor(modelItem => data[i].姓名)
+                </td>
+                <td>
+                    @Html.DisplayFor(modelItem => data[i].Email)
+                </td>
+                <td>
+                    @Html.EditorFor(modelItem => data[i].手機)
+                </td>
+                <td>
+                    @Html.EditorFor(modelItem => data[i].電話)
+                </td>
+                <td>
+                    @Html.DisplayFor(modelItem => data[i].客戶資料.客戶名稱)
+                </td>
+            </tr>
+        }
+    </table>
+    <div class="row">
+        <div class="col-md-12 text-right">
+            <input type="submit" value="更新" class="btn btn-primary" />
+        </div>
+    </div>
+}

@@ -192,6 +192,33 @@ namespace MvcHomework01.Controllers
             return File(ms.ToArray(), "application/vnd.openxmlformats-officedocument.spreadsheetml.sheet", "客戶聯絡人資料.xlsx");
         }
 
+        //
+        public ActionResult EditTable(int id) // 客戶ID
+        {
+            ViewBag.id = id;
+            var 客戶聯絡人s = customerRepo.Get(id).客戶聯絡人;
+
+            return PartialView("EditTable", 客戶聯絡人s);
+        }
+        //
+        [HttpPost]
+        public ActionResult EditTable(IList<客戶聯絡人> model, int id)
+        {
+            
+            foreach (var item in model)
+            {
+                var contact = contactRepo.Get(item.Id);
+                contact.職稱 = item.職稱;
+                contact.電話 = item.電話;
+                contact.手機 = item.手機;
+            }
+
+            contactRepo.UnitOfWork.Commit();
+            TempData["Messages"] = "儲存成功";
+
+            return RedirectToAction("Details", "Customer", new { id = id });
+        }
+
         protected override void Dispose(bool disposing)
         {
             if (disposing)

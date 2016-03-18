@@ -392,6 +392,7 @@
     <Content Include="Views\VW\Index.cshtml" />
     <Content Include="Views\Home\Test.cshtml" />
     <Content Include="Views\Shared\_BSBaseLayout.cshtml" />
+    <Content Include="Views\Shared\MissingParam.cshtml" />
   </ItemGroup>
   <ItemGroup>
     <Folder Include="App_Data\" />

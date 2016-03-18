@@ -54,12 +54,13 @@ namespace MvcHomework01.Controllers
         }
 
         // GET: Bank/Details/5
+        [HandleError(ExceptionType = typeof(InvalidOperationException),View = "MissingParam")]
         public ActionResult Details(int? id)
         {
-            if (id == null)
-            {
-                return new HttpStatusCodeResult(HttpStatusCode.BadRequest);
-            }
+            //if (id == null)
+            //{
+            //    return new HttpStatusCodeResult(HttpStatusCode.BadRequest);
+            //}
             客戶銀行資訊 客戶銀行資訊 = repoBank.Get(id.Value);
             if (客戶銀行資訊 == null)
             {

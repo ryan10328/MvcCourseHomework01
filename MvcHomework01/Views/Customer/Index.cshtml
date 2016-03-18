@@ -100,12 +100,34 @@
             <td>
                 @Html.DisplayFor(modelItem => item.Email)
             </td>
-            <td>
-                @Html.ActionLink("編輯", "Edit", new { id = item.Id }) |
-                @Html.ActionLink("詳細頁面", "Details", new { id = item.Id }) |
-                @Html.ActionLink("刪除", "Delete", new { id = item.Id })
-            </td>
+
+            @if (User.Identity.IsAuthenticated)
+            {
+                <td>
+                    @Html.ActionLink("編輯", "Edit", new { id = item.Id })
+                </td>
+            }
+            else
+            {
+                <td>
+                    @Html.ActionLink("編輯", "Edit", new { id = item.Id })  |
+                    @Html.ActionLink("詳細頁面", "Details", new { id = item.Id }) |
+                    @Html.ActionLink("刪除", "Delete", new { id = item.Id })
+                </td>
+            }
         </tr>
     }
 
 </table>
+
+@section Scripts{
+    <script type="text/javascript">
+        @if(TempData["Messages"] != null)
+        {
+             <text>
+        var message = "@TempData["Messages"].ToString()";
+        alert(JSON.stringify(message));
+        </text>
+        }
+    </script>
+}

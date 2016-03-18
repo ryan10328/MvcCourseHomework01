@@ -1,4 +1,6 @@
-﻿@model MvcHomework01.Models.客戶資料
+﻿@using System.Security.Cryptography
+@using System.Text
+@model MvcHomework01.Models.客戶資料
 
 
 @section Header{
@@ -18,6 +20,7 @@
     </ol>
 }
 
+
 @using (Html.BeginForm())
 {
     @Html.AntiForgeryToken()
@@ -31,19 +34,41 @@
         <div class="form-group">
             @Html.LabelFor(model => model.客戶名稱, htmlAttributes: new { @class = "control-label col-md-2" })
             <div class="col-md-10">
-                @Html.EditorFor(model => model.客戶名稱, new { htmlAttributes = new { @class = "form-control" } })
-                @Html.ValidationMessageFor(model => model.客戶名稱, "", new { @class = "text-danger" })
+                @if (User.Identity.IsAuthenticated)
+                {
+                    @Html.HiddenFor(model => model.客戶名稱)
+                    @Html.TextBoxFor(model => model.客戶名稱, new { @class = "form-control", disabled = "" })
+                }
+                else
+                {
+                    @Html.EditorFor(model => model.客戶名稱, new { htmlAttributes = new { @class = "form-control" } })
+                    @Html.ValidationMessageFor(model => model.客戶名稱, "", new { @class = "text-danger" })
+                }
             </div>
         </div>
 
         <div class="form-group">
             @Html.LabelFor(model => model.統一編號, htmlAttributes: new { @class = "control-label col-md-2" })
             <div class="col-md-10">
-                @Html.EditorFor(model => model.統一編號, new { htmlAttributes = new { @class = "form-control" } })
-                @Html.ValidationMessageFor(model => model.統一編號, "", new { @class = "text-danger" })
+                @if (User.Identity.IsAuthenticated)
+                {
+                    @Html.HiddenFor(model => model.統一編號)
+                    @Html.TextBoxFor(model => model.統一編號, new { @class = "form-control", disabled = "" })
+                }
+                else
+                {
+                    @Html.EditorFor(model => model.統一編號, new { htmlAttributes = new { @class = "form-control" } })
+                    @Html.ValidationMessageFor(model => model.統一編號, "", new { @class = "text-danger" })
+                }
             </div>
         </div>
-
+        <div class="form-group">
+            @Html.LabelFor(model => model.密碼, htmlAttributes: new { @class = "control-label col-md-2" })
+            <div class="col-md-10">
+                @Html.PasswordFor(model => model.密碼, new { @class = "form-control" })
+                @Html.ValidationMessageFor(model => model.密碼, "", new { @class = "text-danger" })
+            </div>
+        </div>
         <div class="form-group">
             @Html.LabelFor(model => model.電話, htmlAttributes: new { @class = "control-label col-md-2" })
             <div class="col-md-10">

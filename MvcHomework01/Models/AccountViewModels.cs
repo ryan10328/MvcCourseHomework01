@@ -49,9 +49,8 @@ namespace MvcHomework01.Models
     public class LoginViewModel
     {
         [Required]
-        [Display(Name = "電子郵件")]
-        [EmailAddress]
-        public string Email { get; set; }
+        [Display(Name = "帳號")]
+        public string Account { get; set; }
 
         [Required]
         [DataType(DataType.Password)]
@@ -65,9 +64,8 @@ namespace MvcHomework01.Models
     public class RegisterViewModel
     {
         [Required]
-        [EmailAddress]
-        [Display(Name = "電子郵件")]
-        public string Email { get; set; }
+        [Display(Name = "帳號")]
+        public string Account { get; set; }
 
         [Required]
         [StringLength(100, ErrorMessage = "{0} 的長度至少必須為 {2} 個字元。", MinimumLength = 6)]

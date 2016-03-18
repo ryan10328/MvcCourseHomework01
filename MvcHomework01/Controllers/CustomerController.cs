@@ -10,6 +10,8 @@ using MvcHomework01.Models;
 using NPOI.XSSF.UserModel;
 using NPOI.SS.UserModel;
 using System.IO;
+using System.Text;
+using System.Security.Cryptography;
 
 namespace MvcHomework01.Controllers
 {
@@ -101,16 +103,55 @@ namespace MvcHomework01.Controllers
         // 詳細資訊，請參閱 http://go.microsoft.com/fwlink/?LinkId=317598。
         [HttpPost]
         [ValidateAntiForgeryToken]
-        public ActionResult Edit([Bind(Include = "Id,客戶名稱,統一編號,電話,傳真,地址,Email,是否刪除")] 客戶資料 客戶資料)
+        public ActionResult Edit(int Id, FormCollection form)
         {
-            if (ModelState.IsValid)
+
+            var db = repo.UnitOfWork.Context as CrmEntities;
+            var 客戶資料 = repo.Get(Id);
+            string pwd = 客戶資料.密碼;
+            if (User.Identity.IsAuthenticated)
             {
-                var db = repo.UnitOfWork.Context as CrmEntities;
-                db.Entry(客戶資料).State = EntityState.Modified;
-                db.SaveChanges();
-                return RedirectToAction("Index");
+                if (TryUpdateModel<客戶資料>(客戶資料, new string[] { "Id", "密碼", "電話", "傳真", "地址", "Email" }))
+                {
+                    if (!string.IsNullOrEmpty(客戶資料.密碼))
+                    {
+                        客戶資料.密碼 = EnCode(客戶資料.密碼);
+                    }
+                    else
+                    {
+                        客戶資料.密碼 = pwd;
+                    }
+                    db.SaveChanges();
+                }
+                else
+                {
+                    return View(客戶資料);
+                }
             }
-            return View(客戶資料);
+            else
+            {
+                if (TryUpdateModel<客戶資料>(客戶資料, new string[] { "Id", "客戶名稱", "統一編號", "電話", "密碼", "傳真", "地址", "Email", "是否刪除" }))
+                {
+                    if (!string.IsNullOrEmpty(客戶資料.密碼))
+                    {
+                        客戶資料.密碼 = EnCode(客戶資料.密碼);
+                    }
+                    else
+                    {
+                        客戶資料.密碼 = pwd;
+                    }
+                    db.SaveChanges();
+                }
+                else
+                {
+                    return View(客戶資料);
+                }
+            }
+
+            TempData["Messages"] = "儲存成功";
+            return RedirectToAction("Index", "Customer");
+           
+           
         }
 
         // GET: Customer/Delete/5
@@ -167,7 +208,7 @@ namespace MvcHomework01.Controllers
 
             MemoryStream ms = new MemoryStream();
             excel.Write(ms);
-            
+
             //ms.Seek(0, SeekOrigin.Begin);
 
             return File(ms.ToArray(), "application/vnd.openxmlformats-officedocument.spreadsheetml.sheet", "客戶資料.xlsx");
@@ -182,6 +223,30 @@ namespace MvcHomework01.Controllers
                 db.Dispose();
             }
             base.Dispose(disposing);
+        }
+
+        public string EnCode(string EnString)  //將字串加密
+        {
+            byte[] Key = { 123, 123, 123, 123, 123, 123, 123, 123 };
+            byte[] IV = { 123, 123, 123, 123, 123, 123, 123, 123 };
+
+            byte[] b = Encoding.UTF8.GetBytes(EnString);
+
+            DESCryptoServiceProvider des = new DESCryptoServiceProvider();
+            ICryptoTransform ict = des.CreateEncryptor(Key, IV);
+            byte[] outData = ict.TransformFinalBlock(b, 0, b.Length);
+            return Convert.ToBase64String(outData);  //回傳加密後的字串
+        }
+
+        public string DeCode(string DeString) //將字串解密
+        {
+            byte[] Key = { 123, 123, 123, 123, 123, 123, 123, 123 };
+            byte[] IV = { 123, 123, 123, 123, 123, 123, 123, 123 };
+            byte[] b = Convert.FromBase64String(DeString);
+            DESCryptoServiceProvider des = new DESCryptoServiceProvider();
+            ICryptoTransform ict = des.CreateDecryptor(Key, IV);
+            byte[] outData = ict.TransformFinalBlock(b, 0, b.Length);
+            return Encoding.UTF8.GetString(outData);//回傳解密後的字串
         }
     }
 }

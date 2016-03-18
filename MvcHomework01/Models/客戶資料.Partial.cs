@@ -36,6 +36,9 @@ namespace MvcHomework01.Models
         [StringLength(250, ErrorMessage = "欄位長度不得大於 250 個字元")]
         public string Email { get; set; }
 
+        public string 帳號 { get; set; }
+        public string 密碼 { get; set; }
+
         [Required]
         public int? 客戶國家Id { get; set; }
 

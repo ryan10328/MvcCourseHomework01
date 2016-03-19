@@ -202,10 +202,10 @@ namespace MvcHomework01.Controllers
         }
         //
         [HttpPost]
-        public ActionResult EditTable(IList<客戶聯絡人> model, int id)
+        public ActionResult EditTable(IList<客戶聯絡人> data, int id)
         {
             
-            foreach (var item in model)
+            foreach (var item in data)
             {
                 var contact = contactRepo.Get(item.Id);
                 contact.職稱 = item.職稱;

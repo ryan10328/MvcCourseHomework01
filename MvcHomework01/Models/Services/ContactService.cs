@@ -39,14 +39,9 @@ namespace MvcHomework01.Models
 
         public ContactViewModel GetContactData(ContactViewModel model)
         {
-            if (model.ContactViewModelSearch.CustomerId.HasValue)
-            {
-                model.CustomerList = new SelectList(CustomerRepo.All().Where(x => x.是否刪除 == false), "Id", "客戶名稱", model.ContactViewModelSearch.CustomerId.Value);
-            }
-            else
-            {
-                model.CustomerList = new SelectList(CustomerRepo.All().Where(x => x.是否刪除 == false), "Id", "客戶名稱");
-            }
+
+            model.CustomerList = new SelectList(CustomerRepo.All().Where(x => x.是否刪除 == false), "Id", "客戶名稱", model.ContactViewModelSearch.CustomerId.Value);
+
 
             var 客戶聯絡人 = ContactRepo.All().Include(客 => 客.客戶資料).Where(x => x.是否刪除 == false);
             if (!string.IsNullOrEmpty(model.ContactViewModelSearch.Name))

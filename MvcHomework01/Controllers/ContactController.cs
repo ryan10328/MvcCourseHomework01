@@ -37,7 +37,7 @@ namespace MvcHomework01.Controllers
             {
                 return View(model);
             }
-            crmService.GetContactData(model);
+          model = crmService.GetContactData(model);
 
             return View(model);
         }
@@ -49,7 +49,7 @@ namespace MvcHomework01.Controllers
             {
                 return new HttpStatusCodeResult(HttpStatusCode.BadRequest);
             }
-
+            
             客戶聯絡人 客戶聯絡人 = crmService.GetContact(id.Value);
 
             if (客戶聯絡人 == null)

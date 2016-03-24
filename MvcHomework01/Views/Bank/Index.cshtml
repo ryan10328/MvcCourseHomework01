@@ -9,16 +9,15 @@
 <h2>Index</h2>
 
 
-@using (Html.BeginForm("Index", "Bank", FormMethod.Post))
+@using (Html.BeginForm("Index", "Bank", FormMethod.Get))
 {
-    @Html.AntiForgeryToken()
     <div class="well">
         <div class="row">
             <div class="form-horizontal">
                 <div class="form-group">
                     @Html.Label("銀行名稱", new { @class = "control-label col-md-2" })
                     <div class="col-md-10">
-                        @Html.TextBoxFor(x => x.BankViewModelSearch.BankName, new { @class = "form-control" })
+                        @Html.TextBoxFor(x => x.BankName, new { @class = "form-control" })
                     </div>
                 </div>
                 <div class="form-group">
@@ -39,22 +38,34 @@
 <table class="table">
     <tr>
         <th>
-            @Html.DisplayNameFor(model => model.客戶銀行資訊s.FirstOrDefault().銀行名稱)
+            <a href="#" data-target="銀行名稱">
+                @Html.DisplayNameFor(model => model.客戶銀行資訊s.FirstOrDefault().銀行名稱)
+            </a>
         </th>
         <th>
-            @Html.DisplayNameFor(model => model.客戶銀行資訊s.FirstOrDefault().銀行代碼)
+            <a href="#" data-target="銀行代碼">
+                @Html.DisplayNameFor(model => model.客戶銀行資訊s.FirstOrDefault().銀行代碼)
+            </a>
         </th>
         <th>
-            @Html.DisplayNameFor(model => model.客戶銀行資訊s.FirstOrDefault().分行代碼)
+            <a href="#" data-target="分行代碼">
+                @Html.DisplayNameFor(model => model.客戶銀行資訊s.FirstOrDefault().分行代碼)
+            </a>
         </th>
         <th>
-            @Html.DisplayNameFor(model => model.客戶銀行資訊s.FirstOrDefault().帳戶名稱)
+            <a href="#" data-target="帳戶名稱">
+                @Html.DisplayNameFor(model => model.客戶銀行資訊s.FirstOrDefault().帳戶名稱)
+            </a>
         </th>
         <th>
-            @Html.DisplayNameFor(model => model.客戶銀行資訊s.FirstOrDefault().帳戶號碼)
+            <a href="#" data-target="帳戶號碼">
+                @Html.DisplayNameFor(model => model.客戶銀行資訊s.FirstOrDefault().帳戶號碼)
+            </a>
         </th>
         <th>
-            @Html.DisplayNameFor(model => model.客戶銀行資訊s.FirstOrDefault().客戶資料.客戶名稱)
+            <a href="#" data-target="客戶名稱">
+                @Html.DisplayNameFor(model => model.客戶銀行資訊s.FirstOrDefault().客戶資料.客戶名稱)
+            </a>
         </th>
         <th></th>
     </tr>
@@ -89,11 +100,25 @@
     }
 
 </table>
-@Html.PagedListPager(Model.客戶銀行資訊s, page => Url.Action("Index", "Bank", new { page }), PagedListRenderOptions.ClassicPlusFirstAndLast)
+@Html.PagedListPager(Model.客戶銀行資訊s, page => Url.Action("Index", "Bank", new { page, BankName = Model.BankName }), PagedListRenderOptions.ClassicPlusFirstAndLast)
+
+
 
 @section Scripts{
     <script type="text/javascript">
         $(function () {
+            $(".table tr:first-child th").each(function () {
+                var a = $(this).children("a");
+                if (a !== undefined) {
+                    var sortDirection = "@Model.SortDirection";
+                    var sortColumn = a.data("target");
+                    a.attr("href", "@Html.Raw(Url.Action("Index","Bank", new { Model.page, Model.BankName }))" + "&SortDirection=" + sortDirection + "&SortColumn=" + sortColumn);
+                }
+            });
+
+
+
+            // ajax delete
             $(".Delete").each(function () {
                 $(this).on("click", function (e) {
                     e.preventDefault();

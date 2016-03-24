@@ -37,7 +37,7 @@ namespace MvcHomework01.Controllers
             {
                 return View(model);
             }
-          model = crmService.GetContactData(model);
+            model = crmService.GetContactData(model);
 
             return View(model);
         }
@@ -49,7 +49,7 @@ namespace MvcHomework01.Controllers
             {
                 return new HttpStatusCodeResult(HttpStatusCode.BadRequest);
             }
-            
+
             客戶聯絡人 客戶聯絡人 = crmService.GetContact(id.Value);
 
             if (客戶聯絡人 == null)
@@ -200,24 +200,43 @@ namespace MvcHomework01.Controllers
 
             return PartialView("EditTable", 客戶聯絡人s);
         }
-        //
-        [HttpPost]
-        public ActionResult EditTable(IList<客戶聯絡人> data, int id)
-        {
-            
-            foreach (var item in data)
-            {
-                var contact = contactRepo.Get(item.Id);
-                contact.職稱 = item.職稱;
-                contact.電話 = item.電話;
-                contact.手機 = item.手機;
-            }
 
-            contactRepo.UnitOfWork.Commit();
-            TempData["Messages"] = "儲存成功";
+        //[HttpPost]
+        //public ActionResult EditTable(int id, FormCollection form)
+        //{
+        //    var db = new CrmEntities();
+        //    var contactors = db.客戶聯絡人.Where(x => x.客戶Id == id).ToList();
 
-            return RedirectToAction("Details", "Customer", new { id = id });
-        }
+        //    if (TryUpdateModel<List<客戶聯絡人>>(contactors, new string [] { "職稱", "電話", "手機" }))
+        //    {
+        //        db.SaveChanges();
+        //    }
+
+
+
+
+        //    //    //contactRepo.UnitOfWork.Commit();
+        //    //    //TempData["Messages"] = "儲存成功";
+
+        //    return RedirectToAction("Details", "Customer", new { id = id });
+        //}
+
+        //[HttpPost]
+        //public ActionResult EditTable(IList<客戶聯絡人> data, int id)
+        //{
+        //    foreach (var item in data)
+        //    {
+        //        var contact = contactRepo.Get(item.Id);
+        //        contact.職稱 = item.職稱;
+        //        contact.電話 = item.電話;
+        //        contact.手機 = item.手機;
+        //    }
+
+        //    contactRepo.UnitOfWork.Commit();
+        //    TempData["Messages"] = "儲存成功";
+
+        //    return RedirectToAction("Details", "Customer", new { id = id });
+        //}
 
         protected override void Dispose(bool disposing)
         {

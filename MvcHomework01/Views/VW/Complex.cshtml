@@ -1,0 +1,32 @@
+﻿@model MvcHomework01.Controllers.Student
+
+<div class="row">
+    @Html.TextBoxFor(x => x.StudentId)<br />
+    @Html.TextBoxFor(x => x.Name) <br/>
+    @Html.TextAreaFor(x => x.Summary) <br />
+    
+</div>
+<hr />
+<div class="row">
+    <table>
+        <tr>
+            <th>編號</th>
+            <th>工作名稱</th>
+            <th>起</th>
+            <th>迄</th>
+        </tr>
+        @{
+            var array = Model.WorkExpereriences.ToArray();
+        }
+        @for (int i = 0; i < array.Length; i++)
+        {
+            <tr>
+                <td>@Html.TextBoxFor(x => array[i].JobId)</td>
+                <td>@Html.TextBoxFor(x => array[i].JobName)</td>
+                <td>@Html.TextBoxFor(x => array[i].StartDate)</td>
+                <td>@Html.TextBoxFor(x => array[i].EndDate)</td>
+            </tr>
+        }
+     
+    </table>
+</div>

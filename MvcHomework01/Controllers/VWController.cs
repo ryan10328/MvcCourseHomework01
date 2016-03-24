@@ -16,5 +16,37 @@ namespace MvcHomework01.Controllers
             var result = db.VWCustomerInformations.ToList();
             return View(result);
         }
+
+        public ActionResult Complex()
+        {
+
+            return View();
+        }
+
+        [HttpPost]
+        public ActionResult Complex(Student student)
+        {
+            return View();
+        }
+
+
+
+    }
+
+
+    public class Student
+    {
+        public int StudentId { get; set; }
+        public string Name { get; set; }
+        public string Summary { get; set; }
+        public List<WorkExperience> WorkExpereriences { get; set; }
+    }
+
+    public class WorkExperience
+    {
+        public int JobId { get; set; }
+        public string JobName { get; set; }
+        public DateTime StartDate { get; set; }
+        public DateTime EndDate { get; set; }
     }
 }

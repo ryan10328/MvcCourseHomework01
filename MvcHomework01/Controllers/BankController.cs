@@ -12,6 +12,7 @@ using NPOI.XSSF.UserModel;
 using NPOI.SS.UserModel;
 using System.IO;
 using PagedList;
+using System.Linq.Expressions;
 
 namespace MvcHomework01.Controllers
 {
@@ -21,38 +22,41 @@ namespace MvcHomework01.Controllers
         客戶銀行資訊Repository repoBank = RepositoryHelper.Get客戶銀行資訊Repository();
         客戶資料Repository repoCustomer = RepositoryHelper.Get客戶資料Repository();
         // GET: Bank
-        public ActionResult Index(int page = 1)
-        {
-            var 客戶銀行資訊 = repoBank.All().Include(客 => 客.客戶資料).Where(x => x.是否刪除 == false);
-
-            BankViewModel model = new BankViewModel()
-            {
-                BankViewModelSearch = null,
-                客戶銀行資訊s = 客戶銀行資訊.OrderBy(x => x.Id).ToPagedList(page, 10)
-            };
-
-            return View(model);
-        }
-
-        [HttpPost]
-        [ValidateAntiForgeryToken]
         public ActionResult Index(BankViewModel model)
         {
-            if (!ModelState.IsValid)
-            {
-                return View(model);
-            }
+            model.SortDirection = model.SortDirection == "asc" ? "desc" : "asc";
             var 客戶銀行資訊 = repoBank.All().Include(客 => 客.客戶資料).Where(x => x.是否刪除 == false);
 
-            if (!string.IsNullOrEmpty(model.BankViewModelSearch.BankName))
+            int pageIndex = model.page < 1 ? 1 : model.page;
+
+            if (!string.IsNullOrEmpty(model.BankName))
             {
-                客戶銀行資訊 = 客戶銀行資訊.Where(x => x.銀行名稱.Contains(model.BankViewModelSearch.BankName));
+                客戶銀行資訊 = 客戶銀行資訊.Where(x => x.銀行名稱.Contains(model.BankName));
             }
 
-            model.客戶銀行資訊s = 客戶銀行資訊.OrderBy(x => x.Id).ToPagedList(model.pageIndex, 10);
+            客戶銀行資訊 = 客戶銀行資訊.OrderBy(x => x.Id);
+
+            if (!string.IsNullOrEmpty(model.SortColumn) && !string.IsNullOrEmpty(model.SortDirection))
+            {
+                switch (model.SortDirection)
+                {
+                    case "asc":
+                        客戶銀行資訊 = 客戶銀行資訊.OrderBy(model.SortColumn);
+                        break;
+                    case "desc":
+                        客戶銀行資訊 = 客戶銀行資訊.OrderByDescending(model.SortColumn);
+                        break;
+                }
+            }
+
+            model.客戶銀行資訊s = 客戶銀行資訊.ToPagedList(pageIndex, 10);
+
 
             return View(model);
         }
+
+       
+
 
         // GET: Bank/Details/5
         [HandleError(ExceptionType = typeof(InvalidOperationException), View = "MissingParam")]
